@@ -63,9 +63,12 @@ NEXT_PUBLIC_SITE_URL=https://www.example.com
 STORAGE_DRIVER=s3
 S3_ENDPOINT_URL=https://ACCOUNT_ID.r2.cloudflarestorage.com
 S3_BUCKET=private-media
+S3_BUCKET_NAME=private-media
 S3_REGION=auto
 S3_ACCESS_KEY=CHANGE_ME
+S3_ACCESS_KEY_ID=CHANGE_ME
 S3_SECRET_KEY=CHANGE_ME
+S3_SECRET_ACCESS_KEY=CHANGE_ME
 ```
 
 For the Compose deployment, set `INTERNAL_API_URL=http://backend:8000/api/v1` because server-rendered frontend requests use the private Compose network. `NEXT_PUBLIC_API_URL` is the public API URL used by browser requests and must never be a Docker hostname or localhost.

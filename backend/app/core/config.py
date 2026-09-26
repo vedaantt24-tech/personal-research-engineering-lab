@@ -15,9 +15,12 @@ class Settings(BaseSettings):
     storage_driver: str = "local"
     s3_endpoint_url: str | None = None
     s3_bucket: str | None = None
+    s3_bucket_name: str | None = None
     s3_region: str | None = None
     s3_access_key: str | None = None
+    s3_access_key_id: str | None = None
     s3_secret_key: str | None = None
+    s3_secret_access_key: str | None = None
     public_site_url: str = "http://localhost:3000"
     smtp_host: str | None = None
     smtp_port: int = 587

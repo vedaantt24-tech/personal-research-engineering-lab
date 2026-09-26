@@ -35,11 +35,11 @@ class S3Storage:
             import boto3
         except ImportError as exc:
             raise StorageError("S3 storage requires boto3") from exc
-        bucket = settings.s3_bucket_name or settings.s3_bucket
-        access_key = settings.s3_access_key_id or settings.s3_access_key
-        secret_key = settings.s3_secret_access_key or settings.s3_secret_key
-        if not bucket:
-            raise StorageError("S3_BUCKET is required when STORAGE_DRIVER=s3")
+        bucket = settings.s3_bucket_name
+        access_key = settings.s3_access_key_id
+        secret_key = settings.s3_secret_access_key
+        if not settings.s3_endpoint_url or not bucket or not access_key or not secret_key:
+            raise StorageError("S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY are required when STORAGE_DRIVER=s3")
         self.client = boto3.client(
             "s3", region_name=settings.s3_region, endpoint_url=settings.s3_endpoint_url,
             aws_access_key_id=access_key, aws_secret_access_key=secret_key,

@@ -14,12 +14,9 @@ class Settings(BaseSettings):
     media_root: str = "/app/data/media"
     storage_driver: str = "local"
     s3_endpoint_url: str | None = None
-    s3_bucket: str | None = None
     s3_bucket_name: str | None = None
     s3_region: str | None = None
-    s3_access_key: str | None = None
     s3_access_key_id: str | None = None
-    s3_secret_key: str | None = None
     s3_secret_access_key: str | None = None
     public_site_url: str = "http://localhost:3000"
     smtp_host: str | None = None
@@ -42,6 +39,11 @@ class Settings(BaseSettings):
                 raise ValueError("Production OWNER_PASSWORD must be changed")
             if self.auto_create_tables:
                 raise ValueError("Set AUTO_CREATE_TABLES=false in production and run migrations explicitly")
+            if self.storage_driver.lower() == "s3" and (
+                not self.s3_endpoint_url or not self.s3_bucket_name
+                or not self.s3_access_key_id or not self.s3_secret_access_key
+            ):
+                raise ValueError("S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY are required when STORAGE_DRIVER=s3")
             if self.turnstile_enabled and (not self.turnstile_secret_key or not self.turnstile_site_key):
                 raise ValueError("TURNSTILE_SECRET_KEY and TURNSTILE_SITE_KEY are required when TURNSTILE_ENABLED=true")
         return self

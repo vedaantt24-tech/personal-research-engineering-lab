@@ -1,0 +1,5 @@
+import type {Metadata} from 'next';
+import {Section} from '../../components/Section';
+import {serverApi} from '../../lib/server-api';
+export const metadata:Metadata={title:'Open To',description:'Opportunities and collaboration areas explicitly configured by the owner.',alternates:{canonical:'/open-to'}};
+export default async function OpenTo(){const p=await serverApi<any>('/public/profile');const value=String(p?.open_to||'').split('\n').map((v:string)=>v.trim()).filter(Boolean);return <main className="fade"><Section eyebrow="OPEN TO" title="Potential opportunities">{value.length?<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{value.map((x,i)=><div key={x} className="card p-6"><div className="mono text-[10px] text-[var(--muted)]">{String(i+1).padStart(2,'0')}</div><h2 className="mt-7 text-lg font-semibold">{x}</h2></div>)}</div>:<div className="card p-6 text-sm text-[var(--muted)]">No opportunities have been published yet. The owner can configure this section from the private dashboard.</div>}<p className="mt-8 text-sm leading-7 text-[var(--muted)]">Only opportunities explicitly entered into the owner profile are shown here.</p></Section></main>}

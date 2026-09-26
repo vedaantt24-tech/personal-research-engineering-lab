@@ -1,0 +1,16 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {api} from '../lib/api';
+
+const DEFAULT_KEYS=['projects','research','ideas','experiments','publications','notes','media'];
+const VIS=['PUBLIC','UNLISTED','PRIVATE','CONFIDENTIAL'];
+
+type Row={id:number;key:string;default_visibility:string;notes:string};
+export function VisibilitySettings(){
+ const [rows,setRows]=useState<Row[]>([]); const [key,setKey]=useState('projects'); const [visibility,setVisibility]=useState('PRIVATE'); const [notes,setNotes]=useState(''); const [msg,setMsg]=useState(''); const [busy,setBusy]=useState(false);
+ async function load(){try{setRows(await api<Row[]>('/admin/visibility-settings'))}catch(e:any){setMsg(e.message)}}
+ useEffect(()=>{load()},[]);
+ function edit(row:Row){setKey(row.key);setVisibility(row.default_visibility);setNotes(row.notes||'');setMsg('')}
+ async function save(e:React.FormEvent){e.preventDefault();setBusy(true);setMsg('');try{await api(`/admin/visibility-settings/${encodeURIComponent(key)}`,{method:'PUT',body:JSON.stringify({default_visibility:visibility,notes})});await load();setMsg('Visibility policy saved.');}catch(e:any){setMsg(e.message)}finally{setBusy(false)}}
+ return <div className="grid gap-6 xl:grid-cols-[.8fr_1.2fr]"><form onSubmit={save} className="card space-y-4 p-6"><div className="mono text-[10px] uppercase tracking-[.18em] text-[var(--muted)]">VISIBILITY POLICY</div><h2 className="text-2xl font-semibold">Default visibility settings</h2><p className="text-sm leading-7 text-[var(--muted)]">These settings document owner defaults. A public publish still requires the explicit safety confirmation enforced by the API.</p><label className="block"><span className="field-label">Collection key</span><input className="input" list="visibility-keys" value={key} onChange={e=>setKey(e.target.value)}/><datalist id="visibility-keys">{DEFAULT_KEYS.map(x=><option value={x} key={x}/>)}</datalist></label><label className="block"><span className="field-label">Default visibility</span><select className="input" value={visibility} onChange={e=>setVisibility(e.target.value)}>{VIS.map(x=><option key={x}>{x}</option>)}</select></label><label className="block"><span className="field-label">Notes</span><textarea className="input min-h-28" value={notes} onChange={e=>setNotes(e.target.value)}/></label><button className="btn btn-dark" disabled={busy||!key.trim()}>{busy?'Saving…':'Save setting'}</button>{msg&&<p className="text-sm text-[var(--muted)]">{msg}</p>}</form><section className="space-y-3"><div className="card p-5"><div className="mono text-[10px] uppercase tracking-[.18em] text-[var(--muted)]">CURRENT DEFAULTS</div><h2 className="mt-1 text-xl font-semibold">Owner visibility policy</h2></div>{rows.length?rows.map(row=><button type="button" key={row.id} onClick={()=>edit(row)} className="card w-full p-5 text-left hover:border-[var(--fg)]"><div className="flex items-center justify-between gap-4"><span className="font-medium">{row.key}</span><span className="status">{row.default_visibility}</span></div>{row.notes&&<p className="mt-2 text-sm leading-6 text-[var(--muted)]">{row.notes}</p>}</button>):<div className="card p-6 text-sm text-[var(--muted)]">No saved defaults yet. Create the first one from the form.</div>}</section></div>
+}

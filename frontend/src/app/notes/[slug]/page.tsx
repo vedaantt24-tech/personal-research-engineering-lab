@@ -1,0 +1,8 @@
+import type {Metadata} from 'next';
+import Link from 'next/link';
+import {notFound} from 'next/navigation';
+import {serverApi} from '../../../lib/server-api';
+import {absoluteUrl,cleanDescription,siteUrl} from '../../../lib/seo';
+type Note={slug:string;title:string;excerpt?:string;body?:string;visibility?:string};
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;const x=await serverApi<Note>(`/public/notes/${encodeURIComponent(slug)}`);const title=x?.title||slug;const description=cleanDescription(x?.excerpt,'Technical note from the personal engineering lab.');return{title:`${title} — Notes`,description,alternates:{canonical:absoluteUrl(`/notes/${slug}`)},openGraph:{title,description,url:absoluteUrl(`/notes/${slug}`),type:'article'}}}
+export default async function Note({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const x=await serverApi<Note>(`/public/notes/${encodeURIComponent(slug)}`);if(!x)notFound();return <><main className="mx-auto max-w-5xl px-5 py-20 md:px-8"><Link href="/notes" className="text-sm underline">← Notes</Link><div className="mt-10"><div className="mono text-[10px] uppercase tracking-[.18em] text-[var(--muted)]">TECHNICAL NOTE</div><h1 className="mt-3 text-5xl font-semibold tracking-[-.04em] md:text-7xl">{x.title}</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-[var(--muted)]">{x.excerpt}</p></div><article className="prose-lite mt-14 max-w-3xl whitespace-pre-wrap"><p>{x.body}</p></article></main><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"TechArticle",headline:x.title,description:x.excerpt,url:`${siteUrl}/notes/${slug}`})}}/></>}

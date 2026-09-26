@@ -1,0 +1,5 @@
+import type {Metadata} from 'next';
+import {Section} from '../../components/Section';
+import {serverApi} from '../../lib/server-api';
+export const metadata:Metadata={title:'Resume',description:'Current professional resume and profile snapshot.',alternates:{canonical:'/resume'}};
+export default async function Resume(){const r=await serverApi<any>('/public/resume');const api=(process.env.NEXT_PUBLIC_API_URL||'http://localhost:8000/api/v1').replace('/api/v1','');const url=r?.file_url?.startsWith('/')?`${api}${r.file_url}`:r?.file_url;return <main className="fade"><Section eyebrow="RESUME" title="Professional snapshot"><div className="card p-7"><p className="max-w-2xl leading-7 text-[var(--muted)]">A current resume is provided only when the owner has explicitly marked it active.</p>{r?.active&&url?<div className="mt-7 flex flex-wrap gap-3"><a className="btn btn-dark" href={url} target="_blank" rel="noreferrer">View resume</a><a className="btn" href={url} download>Download resume</a></div>:<div className="mt-7 status">Resume not published yet</div>}</div></Section></main>}

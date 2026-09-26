@@ -1,0 +1,3 @@
+'use client';
+import {useEffect} from 'react';
+export default function GlobalError({error,reset}:{error:Error & {digest?:string};reset:()=>void}){useEffect(()=>{console.error(error)},[error]);return <main className="grid min-h-[70vh] place-items-center px-5"><div className="card max-w-lg p-8 text-center"><div className="mono text-[10px] uppercase tracking-[.2em] text-[var(--muted)]">UNEXPECTED ERROR</div><h1 className="mt-3 text-3xl font-semibold">Something went wrong.</h1><p className="mt-3 text-sm leading-7 text-[var(--muted)]">The page could not be rendered. No private data is shown here.</p><button className="btn btn-dark mt-6" onClick={()=>reset()}>Try again</button></div></main>}

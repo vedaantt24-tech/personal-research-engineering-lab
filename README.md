@@ -117,6 +117,10 @@ alembic -c alembic.ini upgrade head
 
 and set `AUTO_CREATE_TABLES=false`.
 
+## Oracle Cloud production deployment
+
+The supported free long-term self-hosted path is an Oracle Cloud Always Free ARM64 VM running Docker Compose, PostgreSQL, Caddy, Cloudflare DNS, and private Cloudflare R2 media storage. Follow [docs/ORACLE-CLOUD-DEPLOYMENT.md](docs/ORACLE-CLOUD-DEPLOYMENT.md) and keep the real `.env` only on the VM. Never run `docker compose down -v` on a deployment containing real data.
+
 ## Final verification status
 
 See `docs/FINAL-FLOW-AUDIT.md`, `docs/FEATURE-CHECKLIST.md` and `docs/FINAL-VERIFICATION.md` for the consolidated implementation matrix.
